@@ -34,6 +34,27 @@ const getProduct = asyncWrapper(async (req, res, next) => {
 	}
 })
 
+// update Product
+const updateProduct = async(req, res, next) => {
+	try {
+		const { id:productID } = req.params
+		const product = await Product.findOneAndUpdate({ 
+			_id:productID }, req.body, {
+				new: true,
+				runValidators: true
+			})
+		if (!product){
+			return res.status(404).json({
+				msg: `No Product with id: ${productID}`
+			})
+		}
+
+		res.status(200).json({ product })
+	} catch (error) {
+		res.status(500).json({ msg: error })
+	}
+}
+
 // Delete product
 const deleteProduct = async (req, res) => {
 	try {
@@ -58,4 +79,4 @@ const deleteProduct = async (req, res) => {
 }
 
 
-module.exports = {getAllProducts, createProduct, getProduct, deleteProduct}
+module.exports = {getAllProducts, createProduct, getProduct, deleteProduct, updateProduct}
